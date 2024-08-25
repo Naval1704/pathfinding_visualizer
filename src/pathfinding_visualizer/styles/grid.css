@@ -1,0 +1,23 @@
+.grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin: 20px;
+}
+
+.node {
+  width: 25px;
+  height: 25px;
+  border: 0.1px solid #676764;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+.node-start {
+  background-color: green; /* Green color for start node */
+}
+
+.node-target {
+  background-color: red; /* Red color for target node */
+}

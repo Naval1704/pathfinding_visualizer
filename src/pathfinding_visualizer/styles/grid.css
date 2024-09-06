@@ -94,25 +94,26 @@
 @keyframes shortestPath {
   0% {
     transform: scale(0.6);
-    background-color: rgb(255, 255, 153); 
+    background-color: rgb(255, 223, 186);
   }
   25% {
     transform: scale(0.8);
-    background-color: rgb(255, 255, 204); 
+    background-color: rgb(255, 215, 0); 
   }
   50% {
     transform: scale(1.2);
-    background-color: rgb(255, 239, 128);
+    background-color: rgb(255, 193, 7); 
   }
   75% {
     transform: scale(1.4);
-    background-color: rgb(255, 224, 102); 
+    background-color: rgb(255, 165, 0); 
   }
   100% {
     transform: scale(1);
-    background-color: rgb(255, 204, 0); 
+    background-color: rgb(255, 140, 0); 
   }
 }
+
 
 /* Hover effect for nodes */
 .node:hover {

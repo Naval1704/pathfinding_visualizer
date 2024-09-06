@@ -73,12 +73,11 @@ function App() {
               onChange={(e) => setPattern(e.target.value)}
             >
               <option value="">Select Pattern</option>
-              <option value="Recursive_Division">Recursive Division</option>
-              <option value="Recursive_Division_(vertical skew)">Recursive Division (vertical skew)</option>
-              <option value="Recursive_Division_(horizontal skew)">Recursive Division (horizontal skew)</option>
+              <option value="Maze">Maze</option>
+              {/* <option value="Recursive_Division_(vertical_skew)">Recursive Division (vertical skew)</option>
+              <option value="Recursive_Division_(horizontal_skew)">Recursive Division (horizontal skew)</option>
               <option value="Basic_Random_Maze">Basic Random Maze</option>
-              <option value="Basic_Weight_Maze">Basic Weight Maze</option>
-              <option value="Simple_Stair_Pattern">Simple Stair Pattern</option>
+              <option value="Simple_Stair_Pattern">Simple Stair Pattern</option> */}
             </select>
           </div>
 

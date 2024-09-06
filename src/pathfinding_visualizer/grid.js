@@ -10,7 +10,7 @@ const STARTING_COL = 0;
 const TARGET_ROW = (Math.floor(window.innerHeight / 29) - 1) / 2;
 const TARGET_COL = Math.floor(window.innerWidth / 32) - 1;
 
-export default class grid extends Component {
+export default class Grid extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,10 +21,17 @@ export default class grid extends Component {
     };
   }
 
-  // for creating grid
   componentDidMount() {
     const grid = this.getInitialGrid();
-    this.setState({ grid });
+    this.setState({ grid }, () => {
+      this.applyPattern(this.props.pattern);
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.pattern !== this.props.pattern) {
+      this.applyPattern(this.props.pattern);
+    }
   }
 
   getInitialGrid = () => {
@@ -72,23 +79,15 @@ export default class grid extends Component {
     return newGrid;
   };
 
-  /**
-   * Handles the mouse down event on the grid.
-   * Toggles the wall state of the cell at the specified row and column.
-   * Updates the grid state and sets the mouseIsPressed state to true.
-   */
   handleMouseDown = (row, col) => {
     const newGrid = this.wallToggle(this.state.grid, row, col);
     this.setState({ grid: newGrid, mouseIsPressed: true });
   };
 
-  // Handles the mouse up event on the grid.
-  // Sets the mouseIsPressed state to false.
   handleMouseUp = () => {
     this.setState({ mouseIsPressed: false });
   };
 
-  // for toggling walls when mouse enters a node
   handleMouseEnter = (row, col) => {
     if (!this.state.mouseIsPressed) return;
     const newGrid = this.wallToggle(this.state.grid, row, col);
@@ -96,11 +95,10 @@ export default class grid extends Component {
   };
 
   clearBoard = () => {
-    // const { startNode, targetNode } = this.state;
     const newGrid = this.state.grid.map((row) =>
       row.map((node) => {
         if (node.isStart || node.isTarget) {
-          return node; // Do not modify start or target nodes
+          return node;
         }
         document.getElementById(`node-${node.row}-${node.col}`).className = "node";
         return {
@@ -132,7 +130,7 @@ export default class grid extends Component {
     const newGrid = this.state.grid.map((row) =>
       row.map((node) => {
         if (node.isStart || node.isTarget) {
-          return node; // Do not modify start or target nodes
+          return node;
         }
         if (node.isVisited || node.isShortestPath) {
           document.getElementById(`node-${node.row}-${node.col}`).className = "node";
@@ -151,11 +149,12 @@ export default class grid extends Component {
   };
 
   animateAlgo(visitedNodesInOrder, nodesInShortestPathOrder) {
+    const speed = this.getAnimationSpeed();
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
           this.animateShortestPath(nodesInShortestPathOrder);
-        }, 10 * i);
+        }, speed * i);
         return;
       }
       setTimeout(() => {
@@ -163,20 +162,78 @@ export default class grid extends Component {
         if (!node.isStart && !node.isTarget) {
           document.getElementById(`node-${node.row}-${node.col}`).className = "node node-visited";
         }
-      }, 10 * i);
+      }, speed * i);
     }
   }
-  
 
   animateShortestPath(nodesInShortestPathOrder) {
-    // const { startNode, targetNode } = this.state;
+    const speed = this.getAnimationSpeed();
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
         if (!node.isStart && !node.isTarget) {
           document.getElementById(`node-${node.row}-${node.col}`).className = "node node-shortest-path";
         }
-      }, 50 * i);
+      }, speed * i);
+    }
+  }
+
+  applyPattern(pattern) {
+    let newGrid = this.state.grid.slice();
+    if (pattern === "Maze") {
+      newGrid = this.generateRecursiveDivision(newGrid);
+    } else {
+      newGrid = this.getInitialGrid();
+    }
+    this.setState({ grid: newGrid });
+  }
+
+  generateRecursiveDivision(grid) {
+    const rows = Math.floor(window.innerHeight / 28);
+    const cols = Math.floor(window.innerWidth / 32);
+    const wallSpacing = 4; // Parameterize wall spacing
+  
+    // Function to add walls in a specific pattern
+    const addWalls = (startRow, endRow, colOffset) => {
+      for (let row = startRow; row < endRow; row++) {
+        for (let col = colOffset; col < cols; col += wallSpacing) {
+          grid[row][col].isWall = true;
+        }
+      }
+    };
+  
+    // Dynamically generate wall patterns based on screen size
+    const wallPatterns = [];
+    const numPatterns = 6; // Number of patterns to generate
+    const rowIncrement = Math.floor(rows / numPatterns);
+  
+    for (let i = 0; i < numPatterns; i++) {
+      const startRow = i * rowIncrement;
+      const endRow = (i + 1) * rowIncrement;
+      const colOffset = (i % 2 === 0) ? 2 : 4; // Alternate colOffset for variety
+      wallPatterns.push({ startRow, endRow, colOffset });
+    }
+  
+    // Add walls based on the defined patterns
+    wallPatterns.forEach(pattern => {
+      const { startRow, endRow, colOffset } = pattern;
+      addWalls(startRow, endRow, colOffset);
+    });
+  
+    return grid;
+  }
+
+  getAnimationSpeed() {
+    const { speed } = this.props;
+    switch (speed) {
+      case "fast":
+        return 2;
+      case "medium":
+        return 20;
+      case "slow":
+        return 40;
+      default:
+        return 10;
     }
   }
 
@@ -186,15 +243,12 @@ export default class grid extends Component {
     }
   };
 
-  // algorithms
   visualizeDijkstra() {
     const { grid } = this.state;
     const startNode = grid[STARTING_ROW][STARTING_COL];
     const finishNode = grid[TARGET_ROW][TARGET_COL];
     const visitedNodes = dijkstra(grid, startNode, finishNode);
-    console.log(visitedNodes.length) ;
     const shortestPath = createPath(finishNode);
-    console.log(shortestPath.length) ;
     this.animateAlgo(visitedNodes, shortestPath);
   }
 
@@ -210,7 +264,7 @@ export default class grid extends Component {
                   const { row, col, isStart, isTarget, isWall } = node;
                   return (
                     <Node
-                      key={`${rowIndx}-${nodeIndx}`} // Ensure unique keys
+                      key={`${rowIndx}-${nodeIndx}`}
                       row={row}
                       col={col}
                       isTarget={isTarget}

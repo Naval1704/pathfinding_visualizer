@@ -197,7 +197,7 @@ body {
 }
 
 .color.yellow {
-  background-color: #f1c40f;
+  background-color: rgba(255, 0, 0);
 }
 
 .color.black {

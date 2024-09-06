@@ -109,7 +109,9 @@ body {
   display: flex;
 }
 
-.clear-board button {
+.clear-board button,
+.clear-walls-weights button,
+.clear-path button{
   width: 80%;
   padding: 12px;
   background-color: #e74c3c;
@@ -120,7 +122,9 @@ body {
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.clear-board button:hover {
+.clear-board button:hover,
+.clear-walls-weights button:hover,
+.clear-path button:hover {
   background-color: #c0392b;
   transform: scale(1.05);
 }
@@ -189,7 +193,7 @@ body {
 }
 
 .color.blue {
-  background-color: #3498db;
+  background-color: rgba(255, 229, 204, 0.9); 
 }
 
 .color.yellow {

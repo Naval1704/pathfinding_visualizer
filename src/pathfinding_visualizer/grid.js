@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import "./styles/grid.css";
-import {dijkstra, getNodesInShortestPathOrder} from '../algorithms/dijkstra';
 import Node from "./node";
 
-const STARTING_ROW = (Math.floor(window.innerHeight / 29) - 1)/2;
+import { dijkstra, createPath } from "../algorithms/dijkstra";
+
+const STARTING_ROW = (Math.floor(window.innerHeight / 29) - 1) / 2;
 const STARTING_COL = 0;
 
-const TARGET_ROW = (Math.floor(window.innerHeight / 29) - 1)/2;
+const TARGET_ROW = (Math.floor(window.innerHeight / 29) - 1) / 2;
 const TARGET_COL = Math.floor(window.innerWidth / 32) - 1;
 
 export default class grid extends Component {
@@ -49,6 +50,7 @@ export default class grid extends Component {
       isTarget: row === targetNode.row && col === targetNode.col,
       distance: Infinity,
       isVisited: false,
+      isShortestPath: false,
       isWall: false,
       prevNode: null,
     };
@@ -61,7 +63,7 @@ export default class grid extends Component {
     if (node.isWall) {
       return newGrid;
     }
-  
+
     const newNode = {
       ...node,
       isWall: !node.isWall,
@@ -94,8 +96,58 @@ export default class grid extends Component {
   };
 
   clearBoard = () => {
-    const grid = this.getInitialGrid();
-    this.setState({ grid });
+    // const { startNode, targetNode } = this.state;
+    const newGrid = this.state.grid.map((row) =>
+      row.map((node) => {
+        if (node.isStart || node.isTarget) {
+          return node; // Do not modify start or target nodes
+        }
+        document.getElementById(`node-${node.row}-${node.col}`).className = "node";
+        return {
+          ...node,
+          isWall: false,
+          isVisited: false,
+          isShortestPath: false,
+          distance: Infinity,
+          prevNode: null,
+        };
+      })
+    );
+    this.setState({ grid: newGrid });
+  };
+
+  clearWalls = () => {
+    const newGrid = this.state.grid.map((row) =>
+      row.map((node) => {
+        if (node.isWall) {
+          return { ...node, isWall: false };
+        }
+        return node;
+      })
+    );
+    this.setState({ grid: newGrid });
+  };
+
+  clearPath = () => {
+    const newGrid = this.state.grid.map((row) =>
+      row.map((node) => {
+        if (node.isStart || node.isTarget) {
+          return node; // Do not modify start or target nodes
+        }
+        if (node.isVisited || node.isShortestPath) {
+          document.getElementById(`node-${node.row}-${node.col}`).className = "node";
+          return {
+            ...node,
+            isVisited: false,
+            isShortestPath: false,
+            distance: Infinity,
+            prevNode: null,
+          };
+        }
+        return node;
+      })
+    );
+    this.setState({ grid: newGrid });
   };
 
   animateAlgo(visitedNodesInOrder, nodesInShortestPathOrder) {
@@ -108,29 +160,42 @@ export default class grid extends Component {
       }
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
-        document.getElementById(`node-${node.row}-${node.col}`).className =
-          "node node-visited";
+        if (!node.isStart && !node.isTarget) {
+          document.getElementById(`node-${node.row}-${node.col}`).className = "node node-visited";
+        }
       }, 10 * i);
     }
   }
+  
 
   animateShortestPath(nodesInShortestPathOrder) {
+    // const { startNode, targetNode } = this.state;
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
-        document.getElementById(`node-${node.row}-${node.col}`).className =
-          "node node-shortest-path";
+        if (!node.isStart && !node.isTarget) {
+          document.getElementById(`node-${node.row}-${node.col}`).className = "node node-shortest-path";
+        }
       }, 50 * i);
     }
   }
 
+  visualizeAlgorithm = (algorithm) => {
+    if (algorithm === "Dijkstra's_Algorithm") {
+      this.visualizeDijkstra();
+    }
+  };
+
+  // algorithms
   visualizeDijkstra() {
-    const {grid} = this.state;
+    const { grid } = this.state;
     const startNode = grid[STARTING_ROW][STARTING_COL];
     const finishNode = grid[TARGET_ROW][TARGET_COL];
-    const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
-    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-    this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+    const visitedNodes = dijkstra(grid, startNode, finishNode);
+    console.log(visitedNodes.length) ;
+    const shortestPath = createPath(finishNode);
+    console.log(shortestPath.length) ;
+    this.animateAlgo(visitedNodes, shortestPath);
   }
 
   render() {
@@ -138,7 +203,6 @@ export default class grid extends Component {
     return (
       <div className="grid-container">
         <div className="grid">
-          {/* <p>Let's visualize {algorithm} with {pattern} pattern and {speed} speed</p> */}
           {grid.map((row, rowIndx) => {
             return (
               <div key={rowIndx} className="grid-row">
@@ -146,7 +210,7 @@ export default class grid extends Component {
                   const { row, col, isStart, isTarget, isWall } = node;
                   return (
                     <Node
-                      key={rowIndx}
+                      key={`${rowIndx}-${nodeIndx}`} // Ensure unique keys
                       row={row}
                       col={col}
                       isTarget={isTarget}
@@ -154,9 +218,7 @@ export default class grid extends Component {
                       isWall={isWall}
                       onMouseDown={(row, col) => this.handleMouseDown(row, col)}
                       onMouseUp={() => this.handleMouseUp()}
-                      onMouseEnter={(row, col) =>
-                        this.handleMouseEnter(row, col)
-                      }
+                      onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
                     />
                   );
                 })}

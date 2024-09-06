@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-// import { FaPlay, FaStop } from "react-icons/fa";
 import Grid from "./pathfinding_visualizer/grid";
 
 function App() {
@@ -11,6 +10,24 @@ function App() {
   const handleClearBoard = () => {
     if (gridRef.current) {
       gridRef.current.clearBoard();
+    }
+  };
+
+  const handleClearWalls = () => {
+    if (gridRef.current) {
+      gridRef.current.clearWalls();
+    }
+  };
+
+  const handleClearPath = () => {
+    if (gridRef.current) {
+      gridRef.current.clearPath();
+    }
+  };
+
+  const handleVisualize = () => {
+    if (gridRef.current) {
+      gridRef.current.visualizeAlgorithm(algorithm);
     }
   };
 
@@ -84,7 +101,7 @@ function App() {
 
         <hr className="partition-line" />
 
-        <button className="visualize-button">Visualize</button>
+        <button className="visualize-button" onClick={handleVisualize}>Visualize</button>
 
         <hr className="partition-line" />
 
@@ -92,19 +109,25 @@ function App() {
           <div className="clear-board">
             <button onClick={handleClearBoard}>Clear Board</button>
           </div>
+
+          <div className="clear-walls-weights">
+            <button onClick={handleClearWalls}>Clear Walls</button>
+          </div>
+
+          <div className="clear-path">
+            <button onClick={handleClearPath}>Clear Path</button>
+          </div>
         </div>
 
         <hr className="partition-line" />
 
         <div className="node-icons">
           <div className="start-node">
-            {/* <FaPlay /> */}
             <div className="color green"></div>
             <span>Start Node</span>
           </div>
 
           <div className="end-node">
-            {/* <FaStop /> */}
             <div className="color red"></div>
             <span>End Node</span>
           </div>

@@ -4,20 +4,21 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  background-color: #e9ecef; 
 }
 
 /* Grid styling */
 .grid {
-  display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 0;
   margin: 10px;
-  background-color: #f0f0f0;
+  background-color: #ffffff; 
   border: 2px solid #ccc;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Grid row styling */
@@ -28,38 +29,37 @@
 
 /* Node styling */
 .node {
-  width: 20px;
-  height: 20px;
+  width: 22px; 
+  height: 22px; 
   border: 1px solid #676764;
   box-sizing: border-box;
   display: inline-block;
-  transition: background-color 0.3s, transform 0.3s;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; 
   cursor: pointer;
-  margin: 0; /* Ensure no margin */
-  padding: 0; /* Ensure no padding */
+  margin: 0;
+  padding: 0;
+  border-radius: 4px; 
 }
 
 /* Start node styling */
 .node-start {
-  background-color: #4caf50;
-  border: 2px solid #388e3c;
-  border-radius: 50%;
+  background-color: #4caf50; 
+  border: 2px solid #388e3c; 
 }
 
 /* Target node styling */
 .node-target {
-  background-color: #dc3545;
-  border: 2px solid #d32f2f;
-  border-radius: 50%;
+  background-color: #dc3545; 
+  border: 2px solid #d32f2f; 
 }
 
 /* Wall node styling */
 .node-wall {
-  background-color: #0c3547;
-  border: 2px solid #08303a;
+  background-color: #0c3547; 
+  border: 2px solid #08303a; 
 }
 
-/* Visited node animation */
+/* Visited node styling */
 .node-visited {
   animation: visitedAnimation 1.5s ease-out forwards;
 }
@@ -67,38 +67,68 @@
 @keyframes visitedAnimation {
   0% {
     transform: scale(0.3);
-    background-color: rgba(0, 0, 66, 0.75);
-    border-radius: 100%;
+    background-color: rgba(173, 216, 230, 0.75);
+    border-radius: 50%;
+  }
+  25% {
+    background-color: rgba(135, 206, 250, 0.75); 
   }
   50% {
-    background-color: rgba(17, 104, 217, 0.75);
+    transform: scale(1.2);
+    background-color: rgba(144, 238, 144, 0.75);
   }
   75% {
-    transform: scale(1.2);
-    background-color: rgba(0, 217, 159, 0.75);
+    background-color: rgba(255, 255, 224, 0.75); 
   }
   100% {
     transform: scale(1);
-    background-color: rgba(0, 190, 218, 0.75);
+    background-color: rgba(255, 229, 204, 0.9); 
   }
 }
 
-/* Shortest path node animation */
+/* Shortest path node styling */
 .node-shortest-path {
-  animation: shortestPath 1.5s ease-out forwards;
+  animation: shortestPath 2s ease-in-out forwards;
 }
 
 @keyframes shortestPath {
   0% {
     transform: scale(0.6);
-    background-color: rgb(255, 254, 106);
+    background-color: rgb(255, 255, 153); 
+  }
+  25% {
+    transform: scale(0.8);
+    background-color: rgb(255, 255, 204); 
   }
   50% {
     transform: scale(1.2);
-    background-color: rgb(255, 254, 106);
+    background-color: rgb(255, 239, 128);
+  }
+  75% {
+    transform: scale(1.4);
+    background-color: rgb(255, 224, 102); 
   }
   100% {
     transform: scale(1);
-    background-color: rgb(255, 254, 106);
+    background-color: rgb(255, 204, 0); 
   }
+}
+
+/* Hover effect for nodes */
+.node:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px); 
+}
+
+/* Additional styles for better UI */
+.grid-row {
+  justify-content: center; 
+}
+
+.node {
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s, border 0.3s; /* Smooth transition for border */
+}
+
+.node:active {
+  transform: scale(0.95); 
 }

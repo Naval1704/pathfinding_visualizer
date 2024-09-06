@@ -1,15 +1,22 @@
-import React, { useState } from "react";
-import { FaPlay, FaStop } from "react-icons/fa";
+import React, { useState, useRef } from "react";
+// import { FaPlay, FaStop } from "react-icons/fa";
 import Grid from "./pathfinding_visualizer/grid";
 
 function App() {
   const [algorithm, setAlgorithm] = useState("");
   const [pattern, setPattern] = useState("");
   const [speed, setSpeed] = useState("");
+  const gridRef = useRef(null);
+
+  const handleClearBoard = () => {
+    if (gridRef.current) {
+      gridRef.current.clearBoard();
+    }
+  };
 
   return (
     <div className="App">
-       <div className="left-column">
+      <div className="left-column">
         <h1 className="app-title">Pathfinding Visualizer</h1>
 
         {/* Dropdown for algorithms and pattern selections */}
@@ -83,15 +90,7 @@ function App() {
 
         <div className="remove-patterns">
           <div className="clear-board">
-            <button>Clear Board</button>
-          </div>
-
-          <div className="clear-walls-weights">
-            <button>Clear Walls & Weights</button>
-          </div>
-
-          <div className="clear-path">
-            <button>Clear Path</button>
+            <button onClick={handleClearBoard}>Clear Board</button>
           </div>
         </div>
 
@@ -99,12 +98,14 @@ function App() {
 
         <div className="node-icons">
           <div className="start-node">
-            <FaPlay />
+            {/* <FaPlay /> */}
+            <div className="color green"></div>
             <span>Start Node</span>
           </div>
 
           <div className="end-node">
-            <FaStop />
+            {/* <FaStop /> */}
+            <div className="color red"></div>
             <span>End Node</span>
           </div>
         </div>
@@ -135,7 +136,7 @@ function App() {
             <strong>Algorithm:</strong> {algorithm || "None"} | <strong>Pattern:</strong> {pattern || "None"} | <strong>Speed:</strong> {speed || "None"}
           </p>
         </div>
-        <Grid algorithm={algorithm} pattern={pattern} speed={speed} />
+        <Grid ref={gridRef} algorithm={algorithm} pattern={pattern} speed={speed} />
       </div>
     </div>
   );

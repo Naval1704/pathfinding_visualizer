@@ -1,23 +1,104 @@
+/* Container for the grid */
+.grid-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Grid styling */
 .grid {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0;
-  margin: 20px;
+  margin: 10px;
+  background-color: #f0f0f0;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Grid row styling */
+.grid-row {
+  display: flex;
+  gap: 0;
+}
+
+/* Node styling */
 .node {
-  width: 25px;
-  height: 25px;
-  border: 0.1px solid #676764;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #676764;
   box-sizing: border-box;
   display: inline-block;
+  transition: background-color 0.3s, transform 0.3s;
+  cursor: pointer;
+  margin: 0; /* Ensure no margin */
+  padding: 0; /* Ensure no padding */
 }
 
+/* Start node styling */
 .node-start {
-  background-color: green; /* Green color for start node */
+  background-color: #4caf50;
+  border: 2px solid #388e3c;
+  border-radius: 50%;
 }
 
+/* Target node styling */
 .node-target {
-  background-color: red; /* Red color for target node */
+  background-color: #dc3545;
+  border: 2px solid #d32f2f;
+  border-radius: 50%;
+}
+
+/* Wall node styling */
+.node-wall {
+  background-color: #0c3547;
+  border: 2px solid #08303a;
+}
+
+/* Visited node animation */
+.node-visited {
+  animation: visitedAnimation 1.5s ease-out forwards;
+}
+
+@keyframes visitedAnimation {
+  0% {
+    transform: scale(0.3);
+    background-color: rgba(0, 0, 66, 0.75);
+    border-radius: 100%;
+  }
+  50% {
+    background-color: rgba(17, 104, 217, 0.75);
+  }
+  75% {
+    transform: scale(1.2);
+    background-color: rgba(0, 217, 159, 0.75);
+  }
+  100% {
+    transform: scale(1);
+    background-color: rgba(0, 190, 218, 0.75);
+  }
+}
+
+/* Shortest path node animation */
+.node-shortest-path {
+  animation: shortestPath 1.5s ease-out forwards;
+}
+
+@keyframes shortestPath {
+  0% {
+    transform: scale(0.6);
+    background-color: rgb(255, 254, 106);
+  }
+  50% {
+    transform: scale(1.2);
+    background-color: rgb(255, 254, 106);
+  }
+  100% {
+    transform: scale(1);
+    background-color: rgb(255, 254, 106);
+  }
 }

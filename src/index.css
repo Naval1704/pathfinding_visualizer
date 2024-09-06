@@ -65,8 +65,6 @@ body {
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
-  /* text-align: center; */
   align-items: flex-start;
   width: 80%;
 }
@@ -100,7 +98,6 @@ body {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
-  margin-bottom: 8px;
 }
 
 .visualize-button:hover {
@@ -112,9 +109,7 @@ body {
   display: flex;
 }
 
-.clear-board button,
-.clear-walls-weights button,
-.clear-path button {
+.clear-board button {
   width: 80%;
   padding: 12px;
   background-color: #e74c3c;
@@ -123,12 +118,9 @@ body {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
-  margin-bottom: 15px;
 }
 
-.clear-board button:hover,
-.clear-walls-weights button:hover,
-.clear-path button:hover {
+.clear-board button:hover {
   background-color: #c0392b;
   transform: scale(1.05);
 }
@@ -185,6 +177,13 @@ body {
   font-size: 14px;
 }
 
+.color.green{
+  background-color: #4caf50;
+}
+
+.color.red{
+  background-color: #dc3545;
+}
 .color.white {
   background-color: #ffffff;
 }

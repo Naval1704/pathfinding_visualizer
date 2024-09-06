@@ -1,14 +1,34 @@
-import React from 'react';
-import { Component } from 'react';
-import './styles/grid.css';
+import React, {Component} from 'react';
 
-export default class Node extends Component{
-    constructor(props){
-        super(props) ;
-        this.state = {} ;
-    }
+// import './Node.css';
 
-    render() {
-        return <div className='node'></div> ;
-    }
+export default class Node extends Component {
+  render() {
+    const {
+      col,
+      isTarget,
+      isStart,
+      isWall,
+      onMouseDown,
+      onMouseEnter,
+      onMouseUp,
+      row,
+    } = this.props;
+    const extraClassName = isTarget
+      ? 'node-target'
+      : isStart
+      ? 'node-start'
+      : isWall
+      ? 'node-wall'
+      : '';
+
+    return (
+      <div
+        id={`node-${row}-${col}`}
+        className={`node ${extraClassName}`}
+        onMouseDown={() => onMouseDown(row, col)}
+        onMouseEnter={() => onMouseEnter(row, col)}
+        onMouseUp={() => onMouseUp()}></div>
+    );
+  }
 }

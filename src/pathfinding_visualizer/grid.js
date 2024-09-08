@@ -3,6 +3,8 @@ import "./styles/grid.css";
 import Node from "./node";
 
 import { dijkstra, createPath } from "../algorithms/dijkstra";
+import { bfs, createPathBFS } from "../algorithms/bfs";
+import { dfs, createPathDFS } from "../algorithms/dfs";
 
 const STARTING_ROW = (Math.floor(window.innerHeight / 29) - 1) / 2;
 const STARTING_COL = 0;
@@ -23,16 +25,21 @@ export default class Grid extends Component {
 
   componentDidMount() {
     const grid = this.getInitialGrid();
-    this.setState({ grid }, () => {
-      this.applyPattern(this.props.pattern);
-    });
+    this.setState({ grid });
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.pattern !== this.props.pattern) {
-      this.applyPattern(this.props.pattern);
-    }
-  }
+  // componentDidMount() {
+  //   const grid = this.getInitialGrid();
+  //   this.setState({ grid }, () => {
+  //     this.applyPattern(this.props.pattern);
+  //   });
+  // }
+
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.pattern !== this.props.pattern) {
+  //     this.applyPattern(this.props.pattern);
+  //   }
+  // }
 
   getInitialGrid = () => {
     const { startNode, targetNode } = this.state;
@@ -178,50 +185,50 @@ export default class Grid extends Component {
     }
   }
 
-  applyPattern(pattern) {
-    let newGrid = this.state.grid.slice();
-    if (pattern === "Maze") {
-      newGrid = this.generateRecursiveDivision(newGrid);
-    } else {
-      newGrid = this.getInitialGrid();
-    }
-    this.setState({ grid: newGrid });
-  }
+  // applyPattern(pattern) {
+  //   let newGrid = this.state.grid.slice();
+  //   if (pattern === "Maze") {
+  //     newGrid = this.generateRecursiveDivision(newGrid);
+  //   } else {
+  //     newGrid = this.getInitialGrid();
+  //   }
+  //   this.setState({ grid: newGrid });
+  // }
 
-  generateRecursiveDivision(grid) {
-    const rows = Math.floor(window.innerHeight / 28);
-    const cols = Math.floor(window.innerWidth / 32);
-    const wallSpacing = 4; // Parameterize wall spacing
+  // generateRecursiveDivision(grid) {
+  //   const rows = Math.floor(window.innerHeight / 28);
+  //   const cols = Math.floor(window.innerWidth / 32);
+  //   const wallSpacing = 4; // Parameterize wall spacing
   
-    // Function to add walls in a specific pattern
-    const addWalls = (startRow, endRow, colOffset) => {
-      for (let row = startRow; row < endRow; row++) {
-        for (let col = colOffset; col < cols; col += wallSpacing) {
-          grid[row][col].isWall = true;
-        }
-      }
-    };
+  //   // Function to add walls in a specific pattern
+  //   const addWalls = (startRow, endRow, colOffset) => {
+  //     for (let row = startRow; row < endRow; row++) {
+  //       for (let col = colOffset; col < cols; col += wallSpacing) {
+  //         grid[row][col].isWall = true;
+  //       }
+  //     }
+  //   };
   
-    // Dynamically generate wall patterns based on screen size
-    const wallPatterns = [];
-    const numPatterns = 6; // Number of patterns to generate
-    const rowIncrement = Math.floor(rows / numPatterns);
+  //   // Dynamically generate wall patterns based on screen size
+  //   const wallPatterns = [];
+  //   const numPatterns = 6; // Number of patterns to generate
+  //   const rowIncrement = Math.floor(rows / numPatterns);
   
-    for (let i = 0; i < numPatterns; i++) {
-      const startRow = i * rowIncrement;
-      const endRow = (i + 1) * rowIncrement;
-      const colOffset = (i % 2 === 0) ? 2 : 4; // Alternate colOffset for variety
-      wallPatterns.push({ startRow, endRow, colOffset });
-    }
+  //   for (let i = 0; i < numPatterns; i++) {
+  //     const startRow = i * rowIncrement;
+  //     const endRow = (i + 1) * rowIncrement;
+  //     const colOffset = (i % 2 === 0) ? 2 : 4; // Alternate colOffset for variety
+  //     wallPatterns.push({ startRow, endRow, colOffset });
+  //   }
   
-    // Add walls based on the defined patterns
-    wallPatterns.forEach(pattern => {
-      const { startRow, endRow, colOffset } = pattern;
-      addWalls(startRow, endRow, colOffset);
-    });
+  //   // Add walls based on the defined patterns
+  //   wallPatterns.forEach(pattern => {
+  //     const { startRow, endRow, colOffset } = pattern;
+  //     addWalls(startRow, endRow, colOffset);
+  //   });
   
-    return grid;
-  }
+  //   return grid;
+  // }
 
   getAnimationSpeed() {
     const { speed } = this.props;
@@ -241,7 +248,31 @@ export default class Grid extends Component {
     if (algorithm === "Dijkstra's_Algorithm") {
       this.visualizeDijkstra();
     }
+    else if( algorithm === "Breadth_first_Search" ){
+      this.visualizeBFS() ;
+    }
+    else if( algorithm === "Depth_first_Search" ){
+      this.visualizeDFS() ;
+    }
   };
+
+  visualizeBFS() {
+    const { grid } = this.state;
+    const startNode = grid[STARTING_ROW][STARTING_COL];
+    const finishNode = grid[TARGET_ROW][TARGET_COL];
+    const visitedNodes = bfs(grid, startNode, finishNode);
+    const shortestPath = createPathBFS(finishNode);
+    this.animateAlgo(visitedNodes, shortestPath);
+  }
+  
+  visualizeDFS() {
+    const { grid } = this.state;
+    const startNode = grid[STARTING_ROW][STARTING_COL];
+    const finishNode = grid[TARGET_ROW][TARGET_COL];
+    const visitedNodes = dfs(grid, startNode, finishNode);
+    const shortestPath = createPathDFS(finishNode);
+    this.animateAlgo(visitedNodes, shortestPath);
+  }
 
   visualizeDijkstra() {
     const { grid } = this.state;

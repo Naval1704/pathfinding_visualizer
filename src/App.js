@@ -49,15 +49,15 @@ function App() {
             >
               <option value="">Select Algorithm</option>
               <option value="Dijkstra's_Algorithm">Dijkstra's Algorithm</option>
-              <option value="A*_Search">A* Search</option>
-              <option value="Greedy_Best_first_Search">Greedy Best-first Search</option>
+              {/* <option value="A*_Search">A* Search</option> */}
+              {/* <option value="Greedy_Best_first_Search">Greedy Best-first Search</option>
               <option value="Swarm_Algorithm">Swarm Algorithm</option>
               <option value="Convergent_Swarm_Algorithm">
                 Convergent Swarm Algorithm
               </option>
               <option value="Bidirectional_Swarm_Algorithm">
                 Bidirectional Swarm Algorithm
-              </option>
+              </option> */}
               <option value="Breadth_first_Search">Breadth-first Search</option>
               <option value="Depth_first_Search">Depth-first Search</option>
             </select>
@@ -73,7 +73,7 @@ function App() {
               onChange={(e) => setPattern(e.target.value)}
             >
               <option value="">Select Pattern</option>
-              <option value="Maze">Maze</option>
+              {/* <option value="Maze">Maze</option> */}
               {/* <option value="Recursive_Division_(vertical_skew)">Recursive Division (vertical skew)</option>
               <option value="Recursive_Division_(horizontal_skew)">Recursive Division (horizontal skew)</option>
               <option value="Basic_Random_Maze">Basic Random Maze</option>

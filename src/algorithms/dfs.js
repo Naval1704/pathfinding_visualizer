@@ -1,34 +1,32 @@
 export function dfs(grid, startNode, endNode) {
     const visitedNodesInOrder = [];
-    const stack = [startNode]; // Stack instead of queue
+    const stack = [startNode];
 
     while (stack.length) {
         const currentNode = stack.pop();
-        if (currentNode.isWall) continue; // Skip walls
-        if (currentNode.isVisited) continue; // Skip visited nodes
+        if (currentNode.isWall) continue ;
 
         visitedNodesInOrder.push(currentNode);
         currentNode.isVisited = true;
 
         if (currentNode === endNode) {
-            createPathDFS(endNode); // Similar to BFS, create the path
+            createPathDFS(endNode);
             return visitedNodesInOrder;
         }
 
         const { row, col } = currentNode;
         const neighbors = getNeighbors(grid, row, col);
 
-        // Push neighbors to the stack, but in reverse order so the first neighbor
-        // is processed first (maintains the "depth" behavior of DFS)
         for (const neighbor of neighbors) {
-            if (!neighbor.isVisited) {
+            if (!neighbor.isVisited && !neighbor.isWall) {
                 neighbor.previousNode = currentNode;
+                neighbor.isVisited = true; 
                 stack.push(neighbor);
             }
         }
     }
 
-    return visitedNodesInOrder; // Return nodes visited during DFS
+    return visitedNodesInOrder;
 }
 
 function getNeighbors(grid, row, col) {
@@ -48,7 +46,7 @@ function getNeighbors(grid, row, col) {
         const newCol = col + direction.col;
 
         if (newRow >= 0 && newRow < numRows && newCol >= 0 && newCol < numCols) {
-            neighbors.push(grid[newRow][newCol]);
+            neighbors.unshift(grid[newRow][newCol]);
         }
     }
 

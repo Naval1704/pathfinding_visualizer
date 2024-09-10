@@ -9,8 +9,6 @@ export function bfs(grid, startNode, endNode) {
         visitedNodesInOrder.push(currentNode);
         currentNode.isVisited = true;
 
-        // if( currentNode.isWall ) continue ;
-
         if (currentNode === endNode) {
             createPathBFS(endNode);
             return visitedNodesInOrder;

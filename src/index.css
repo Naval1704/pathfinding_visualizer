@@ -284,3 +284,66 @@ body {
   color: #11578C;
 }
 
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .App {
+    flex-direction: column;
+  }
+
+  .left-column {
+    width: 100%;
+    height: auto;
+    box-shadow: none;
+  }
+
+  .right-workspace {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .algo-list {
+    width: 100%;
+  }
+
+  .dropdown,
+  .speed,
+  .color-codes,
+  .node-icons {
+    width: 100%;
+  }
+
+  .visualize-button,
+  .clear-board button,
+  .clear-walls-weights button,
+  .clear-path button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-title {
+    font-size: 24px;
+  }
+
+  .algo-list li {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .visualize-button,
+  .clear-board button,
+  .clear-walls-weights button,
+  .clear-path button {
+    padding: 10px;
+    gap: 5px;
+    font-size: 14px;
+  }
+
+  .playground-title {
+    font-size: 20px;
+  }
+
+  .selected-info {
+    font-size: 16px;
+  }
+}

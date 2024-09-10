@@ -238,6 +238,10 @@ export default class Grid extends Component {
     const finishNode = grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = bfs(grid, startNode, finishNode);
     const shortestPath = createPathBFS(finishNode);
+    if ( !visitedNodes || visitedNodes.length === 0 || !shortestPath || shortestPath.length === 0) {
+      alert("Target node not found.");
+      return;
+    }
     this.animateAlgo(visitedNodes, shortestPath);
   }
 
@@ -247,6 +251,10 @@ export default class Grid extends Component {
     const finishNode = grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = dfs(grid, startNode, finishNode);
     const shortestPath = createPathDFS(finishNode);
+    if ( !visitedNodes || visitedNodes.length === 0 || !shortestPath || shortestPath.length === 0) {
+      alert("Target node not found.");
+      return;
+    }
     this.animateAlgo(visitedNodes, shortestPath);
   }
 
@@ -256,6 +264,10 @@ export default class Grid extends Component {
     const finishNode = grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = dijkstra(grid, startNode, finishNode);
     const shortestPath = createPath(finishNode);
+    if ( !visitedNodes || visitedNodes.length === 0 || !shortestPath || shortestPath.length === 0) {
+      alert("Target node not found.");
+      return;
+    }
     this.animateAlgo(visitedNodes, shortestPath);
   }
 

@@ -4,14 +4,15 @@ export function dfs(grid, startNode, endNode) {
 
     while (stack.length) {
         const currentNode = stack.pop();
-        if (currentNode.isWall) continue ;
 
-        visitedNodesInOrder.push(currentNode);
+        if (currentNode.isWall || currentNode.isVisited) continue;
+
         currentNode.isVisited = true;
+        visitedNodesInOrder.push(currentNode);
 
         if (currentNode === endNode) {
             createPathDFS(endNode);
-            return visitedNodesInOrder;
+            return visitedNodesInOrder; // Return visited nodes
         }
 
         const { row, col } = currentNode;
@@ -19,9 +20,8 @@ export function dfs(grid, startNode, endNode) {
 
         for (const neighbor of neighbors) {
             if (!neighbor.isVisited && !neighbor.isWall) {
-                neighbor.previousNode = currentNode;
-                neighbor.isVisited = true; 
-                stack.push(neighbor);
+                neighbor.previousNode = currentNode; 
+                stack.push(neighbor); 
             }
         }
     }
@@ -46,7 +46,7 @@ function getNeighbors(grid, row, col) {
         const newCol = col + direction.col;
 
         if (newRow >= 0 && newRow < numRows && newCol >= 0 && newCol < numCols) {
-            neighbors.unshift(grid[newRow][newCol]);
+            neighbors.push(grid[newRow][newCol]);
         }
     }
 

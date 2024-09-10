@@ -335,7 +335,6 @@ body {
   .clear-walls-weights button,
   .clear-path button {
     padding: 10px;
-    gap: 5px;
     font-size: 14px;
   }
 

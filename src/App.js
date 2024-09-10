@@ -31,6 +31,15 @@ function App() {
     }
   };
 
+  const handleSelectChange = (setter) => (e) => {
+    setter(e.target.value);
+    if (e.target.value) {
+      e.target.classList.add("selected");
+    } else {
+      e.target.classList.remove("selected");
+    }
+  };
+
   return (
     <div className="App">
       <div className="left-column">
@@ -45,19 +54,10 @@ function App() {
               id="algorithm"
               name="algorithm"
               value={algorithm}
-              onChange={(e) => setAlgorithm(e.target.value)}
+              onChange={handleSelectChange(setAlgorithm)}
             >
               <option value="">Select Algorithm</option>
               <option value="Dijkstra's_Algorithm">Dijkstra's Algorithm</option>
-              {/* <option value="A*_Search">A* Search</option> */}
-              {/* <option value="Greedy_Best_first_Search">Greedy Best-first Search</option>
-              <option value="Swarm_Algorithm">Swarm Algorithm</option>
-              <option value="Convergent_Swarm_Algorithm">
-                Convergent Swarm Algorithm
-              </option>
-              <option value="Bidirectional_Swarm_Algorithm">
-                Bidirectional Swarm Algorithm
-              </option> */}
               <option value="Breadth_first_Search">Breadth-first Search</option>
               <option value="Depth_first_Search">Depth-first Search</option>
             </select>
@@ -70,7 +70,7 @@ function App() {
               id="pattern"
               name="pattern"
               value={pattern}
-              onChange={(e) => setPattern(e.target.value)}
+              onChange={handleSelectChange(setPattern)}
             >
               <option value="">Select Pattern</option>
               {/* <option value="Maze">Maze</option> */}
@@ -82,13 +82,13 @@ function App() {
           </div>
 
           {/* Select speed */}
-          <div className="speed">
+          <div className="dropdown">
             <label htmlFor="speed">Speed:</label>
             <select
               id="speed"
               name="speed"
               value={speed}
-              onChange={(e) => setSpeed(e.target.value)}
+              onChange={handleSelectChange(setSpeed)}
             >
               <option value="">Select Speed</option>
               <option value="fast">Fast</option>
@@ -100,7 +100,9 @@ function App() {
 
         <hr className="partition-line" />
 
-        <button className="visualize-button" onClick={handleVisualize}>Visualize</button>
+        <button className="visualize-button" onClick={handleVisualize}>
+          Visualize
+        </button>
 
         <hr className="partition-line" />
 
@@ -155,10 +157,17 @@ function App() {
       <div className="right-workspace">
         <div className="selected-info">
           <p>
-            <strong>Algorithm:</strong> {algorithm || "None"} | <strong>Pattern:</strong> {pattern || "None"} | <strong>Speed:</strong> {speed || "None"}
+            <strong>Algorithm:</strong> {algorithm || "None"} |{" "}
+            <strong>Pattern:</strong> {pattern || "None"} |{" "}
+            <strong>Speed:</strong> {speed || "None"}
           </p>
         </div>
-        <Grid ref={gridRef} algorithm={algorithm} pattern={pattern} speed={speed} />
+        <Grid
+          ref={gridRef}
+          algorithm={algorithm}
+          pattern={pattern}
+          speed={speed}
+        />
       </div>
     </div>
   );

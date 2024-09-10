@@ -81,11 +81,15 @@ body {
   border-radius: 5px;
   border: 1px solid #ccc;
   background-color: #ecf0f1;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
 .dropdown select:focus {
   border-color: #1abc9c;
+}
+
+.dropdown select.selected {
+  background-color: #d1e7dd; /* Change this color to your desired selected color */
 }
 
 .visualize-button {

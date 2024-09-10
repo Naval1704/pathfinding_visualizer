@@ -6,20 +6,16 @@ import { dijkstra, createPath } from "../algorithms/dijkstra";
 import { bfs, createPathBFS } from "../algorithms/bfs";
 import { dfs, createPathDFS } from "../algorithms/dfs";
 
-const STARTING_ROW = (Math.floor(window.innerHeight / 29) - 1) / 2;
-const STARTING_COL = 0;
-
-const TARGET_ROW = (Math.floor(window.innerHeight / 29) - 1) / 2;
-const TARGET_COL = Math.floor(window.innerWidth / 32) - 1;
-
 export default class Grid extends Component {
   constructor(props) {
     super(props);
     this.state = {
       grid: [],
       mouseIsPressed: false,
-      startNode: { row: STARTING_ROW, col: STARTING_COL },
-      targetNode: { row: TARGET_ROW, col: TARGET_COL },
+      startNode: null,
+      targetNode: null,
+      selectingStartNode: false,
+      selectingEndNode: false,
     };
   }
 
@@ -28,40 +24,26 @@ export default class Grid extends Component {
     this.setState({ grid });
   }
 
-  // componentDidMount() {
-  //   const grid = this.getInitialGrid();
-  //   this.setState({ grid }, () => {
-  //     this.applyPattern(this.props.pattern);
-  //   });
-  // }
-
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.pattern !== this.props.pattern) {
-  //     this.applyPattern(this.props.pattern);
-  //   }
-  // }
-
   getInitialGrid = () => {
-    const { startNode, targetNode } = this.state;
     const grid = [];
     const rows = Math.floor(window.innerHeight / 28);
     const cols = Math.floor(window.innerWidth / 32);
     for (let row = 0; row < rows; row++) {
       const currentRow = [];
       for (let col = 0; col < cols; col++) {
-        currentRow.push(this.createNode(row, col, startNode, targetNode));
+        currentRow.push(this.createNode(row, col));
       }
       grid.push(currentRow);
     }
     return grid;
   };
 
-  createNode = (row, col, startNode, targetNode) => {
+  createNode = (row, col) => {
     return {
       row,
       col,
-      isStart: row === startNode.row && col === startNode.col,
-      isTarget: row === targetNode.row && col === targetNode.col,
+      isStart: false,
+      isTarget: false,
       distance: Infinity,
       isVisited: false,
       isShortestPath: false,
@@ -87,8 +69,15 @@ export default class Grid extends Component {
   };
 
   handleMouseDown = (row, col) => {
-    const newGrid = this.wallToggle(this.state.grid, row, col);
-    this.setState({ grid: newGrid, mouseIsPressed: true });
+    const { selectingStartNode, selectingEndNode } = this.state;
+    if (selectingStartNode) {
+      this.setStartNode(row, col);
+    } else if (selectingEndNode) {
+      this.setEndNode(row, col);
+    } else {
+      const newGrid = this.wallToggle(this.state.grid, row, col);
+      this.setState({ grid: newGrid, mouseIsPressed: true });
+    }
   };
 
   handleMouseUp = () => {
@@ -99,6 +88,34 @@ export default class Grid extends Component {
     if (!this.state.mouseIsPressed) return;
     const newGrid = this.wallToggle(this.state.grid, row, col);
     this.setState({ grid: newGrid });
+  };
+
+  setStartNode = (row, col) => {
+    const { grid } = this.state;
+    const newGrid = grid.slice();
+    if (this.state.startNode) {
+      newGrid[this.state.startNode.row][this.state.startNode.col].isStart = false;
+    }
+    newGrid[row][col].isStart = true;
+    this.setState({
+      grid: newGrid,
+      startNode: { row, col },
+      selectingStartNode: false,
+    });
+  };
+
+  setEndNode = (row, col) => {
+    const { grid } = this.state;
+    const newGrid = grid.slice();
+    if (this.state.targetNode) {
+      newGrid[this.state.targetNode.row][this.state.targetNode.col].isTarget = false;
+    }
+    newGrid[row][col].isTarget = true;
+    this.setState({
+      grid: newGrid,
+      targetNode: { row, col },
+      selectingEndNode: false,
+    });
   };
 
   clearBoard = () => {
@@ -185,51 +202,6 @@ export default class Grid extends Component {
     }
   }
 
-  // applyPattern(pattern) {
-  //   let newGrid = this.state.grid.slice();
-  //   if (pattern === "Maze") {
-  //     newGrid = this.generateRecursiveDivision(newGrid);
-  //   } else {
-  //     newGrid = this.getInitialGrid();
-  //   }
-  //   this.setState({ grid: newGrid });
-  // }
-
-  // generateRecursiveDivision(grid) {
-  //   const rows = Math.floor(window.innerHeight / 28);
-  //   const cols = Math.floor(window.innerWidth / 32);
-  //   const wallSpacing = 4; // Parameterize wall spacing
-  
-  //   // Function to add walls in a specific pattern
-  //   const addWalls = (startRow, endRow, colOffset) => {
-  //     for (let row = startRow; row < endRow; row++) {
-  //       for (let col = colOffset; col < cols; col += wallSpacing) {
-  //         grid[row][col].isWall = true;
-  //       }
-  //     }
-  //   };
-  
-  //   // Dynamically generate wall patterns based on screen size
-  //   const wallPatterns = [];
-  //   const numPatterns = 6; // Number of patterns to generate
-  //   const rowIncrement = Math.floor(rows / numPatterns);
-  
-  //   for (let i = 0; i < numPatterns; i++) {
-  //     const startRow = i * rowIncrement;
-  //     const endRow = (i + 1) * rowIncrement;
-  //     const colOffset = (i % 2 === 0) ? 2 : 4; // Alternate colOffset for variety
-  //     wallPatterns.push({ startRow, endRow, colOffset });
-  //   }
-  
-  //   // Add walls based on the defined patterns
-  //   wallPatterns.forEach(pattern => {
-  //     const { startRow, endRow, colOffset } = pattern;
-  //     addWalls(startRow, endRow, colOffset);
-  //   });
-  
-  //   return grid;
-  // }
-
   getAnimationSpeed() {
     const { speed } = this.props;
     switch (speed) {
@@ -245,30 +217,34 @@ export default class Grid extends Component {
   }
 
   visualizeAlgorithm = (algorithm) => {
+    const { startNode, targetNode } = this.state;
+    if (!startNode || !targetNode) {
+      alert("Please select start node and end node !!");
+      return;
+    }
+
     if (algorithm === "Dijkstra's_Algorithm") {
       this.visualizeDijkstra();
-    }
-    else if( algorithm === "Breadth_first_Search" ){
-      this.visualizeBFS() ;
-    }
-    else if( algorithm === "Depth_first_Search" ){
-      this.visualizeDFS() ;
+    } else if (algorithm === "Breadth_first_Search") {
+      this.visualizeBFS();
+    } else if (algorithm === "Depth_first_Search") {
+      this.visualizeDFS();
     }
   };
 
   visualizeBFS() {
     const { grid } = this.state;
-    const startNode = grid[STARTING_ROW][STARTING_COL];
-    const finishNode = grid[TARGET_ROW][TARGET_COL];
+    const startNode = grid[this.state.startNode.row][this.state.startNode.col];
+    const finishNode = grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = bfs(grid, startNode, finishNode);
     const shortestPath = createPathBFS(finishNode);
     this.animateAlgo(visitedNodes, shortestPath);
   }
-  
+
   visualizeDFS() {
     const { grid } = this.state;
-    const startNode = grid[STARTING_ROW][STARTING_COL];
-    const finishNode = grid[TARGET_ROW][TARGET_COL];
+    const startNode = grid[this.state.startNode.row][this.state.startNode.col];
+    const finishNode = grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = dfs(grid, startNode, finishNode);
     const shortestPath = createPathDFS(finishNode);
     this.animateAlgo(visitedNodes, shortestPath);
@@ -276,8 +252,8 @@ export default class Grid extends Component {
 
   visualizeDijkstra() {
     const { grid } = this.state;
-    const startNode = grid[STARTING_ROW][STARTING_COL];
-    const finishNode = grid[TARGET_ROW][TARGET_COL];
+    const startNode = grid[this.state.startNode.row][this.state.startNode.col];
+    const finishNode = grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = dijkstra(grid, startNode, finishNode);
     const shortestPath = createPath(finishNode);
     this.animateAlgo(visitedNodes, shortestPath);
@@ -287,6 +263,14 @@ export default class Grid extends Component {
     const { grid } = this.state;
     return (
       <div className="grid-container">
+        <div className="controls">
+          <button className="control-button-green" onClick={() => this.setState({ selectingStartNode: true, selectingEndNode: false })}>
+            Select Start Node
+          </button>
+          <button className="control-button-red" onClick={() => this.setState({ selectingEndNode: true, selectingStartNode: false })}>
+            Select End Node
+          </button>
+        </div>
         <div className="grid">
           {grid.map((row, rowIndx) => {
             return (

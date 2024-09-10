@@ -60,6 +60,7 @@ function App() {
               <option value="Dijkstra's_Algorithm">Dijkstra's Algorithm</option>
               <option value="Breadth_first_Search">Breadth-first Search</option>
               <option value="Depth_first_Search">Depth-first Search</option>
+              <option value="A_star" >A* Algorithm</option>
             </select>
           </div>
 

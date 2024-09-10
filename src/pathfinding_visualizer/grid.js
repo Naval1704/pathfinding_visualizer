@@ -5,6 +5,7 @@ import Node from "./node";
 import { dijkstra, createPath } from "../algorithms/dijkstra";
 import { bfs, createPathBFS } from "../algorithms/bfs";
 import { dfs, createPathDFS } from "../algorithms/dfs";
+import { astar, createPathAstar } from "../algorithms/A_star";
 
 export default class Grid extends Component {
   constructor(props) {
@@ -198,9 +199,9 @@ export default class Grid extends Component {
   }
 
   animateShortestPath(nodesInShortestPathOrder) {
-    if( nodesInShortestPathOrder.length === 1 ) {
+    if (nodesInShortestPathOrder.length === 1) {
       alert("Target not found!!!");
-      return ;
+      return;
     }
     const speed = this.getAnimationSpeed();
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
@@ -235,7 +236,9 @@ export default class Grid extends Component {
       return;
     }
 
-    if (algorithm === "Dijkstra's_Algorithm") {
+    if (algorithm === "A_star") {
+      this.visualizeAStar();
+    } else if (algorithm === "Dijkstra's_Algorithm") {
       this.visualizeDijkstra();
     } else if (algorithm === "Breadth_first_Search") {
       this.visualizeBFS();
@@ -250,7 +253,7 @@ export default class Grid extends Component {
     const finishNode =
       grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = bfs(grid, startNode, finishNode);
-    console.log(visitedNodes.length) ;
+    console.log(visitedNodes.length);
     const shortestPath = createPathBFS(finishNode);
     console.log(shortestPath.length);
     this.animateAlgo(visitedNodes, shortestPath);
@@ -263,7 +266,7 @@ export default class Grid extends Component {
       grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = dfs(grid, startNode, finishNode);
     const shortestPath = createPathDFS(finishNode);
-    console.log(visitedNodes.length) ;
+    console.log(visitedNodes.length);
     console.log(shortestPath.length);
     this.animateAlgo(visitedNodes, shortestPath);
   }
@@ -275,8 +278,18 @@ export default class Grid extends Component {
       grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = dijkstra(grid, startNode, finishNode);
     const shortestPath = createPath(finishNode);
-    console.log(visitedNodes.length) ;
+    console.log(visitedNodes.length);
     console.log(shortestPath.length);
+    this.animateAlgo(visitedNodes, shortestPath);
+  }
+
+  visualizeAStar() {
+    const { grid } = this.state;
+    const startNode = grid[this.state.startNode.row][this.state.startNode.col];
+    const finishNode =
+      grid[this.state.targetNode.row][this.state.targetNode.col];
+    const visitedNodes = astar(grid, startNode, finishNode);
+    const shortestPath = createPathAstar(finishNode);
     this.animateAlgo(visitedNodes, shortestPath);
   }
 

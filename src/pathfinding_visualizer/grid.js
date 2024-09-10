@@ -259,15 +259,25 @@ export default class Grid extends Component {
     this.animateAlgo(visitedNodes, shortestPath);
   }
 
+  handleSelectStartNode = () => {
+    this.setState({ selectingStartNode: true, selectingEndNode: false });
+    alert("Please select a start node.");
+  };
+
+  handleSelectEndNode = () => {
+    this.setState({ selectingEndNode: true, selectingStartNode: false });
+    alert("Please select an end node.");
+  };
+
   render() {
     const { grid } = this.state;
     return (
       <div className="grid-container">
         <div className="controls">
-          <button className="control-button-green" onClick={() => this.setState({ selectingStartNode: true, selectingEndNode: false })}>
+          <button className="control-button-green" onClick={this.handleSelectStartNode}>
             Select Start Node
           </button>
-          <button className="control-button-red" onClick={() => this.setState({ selectingEndNode: true, selectingStartNode: false })}>
+          <button className="control-button-red" onClick={this.handleSelectEndNode}>
             Select End Node
           </button>
         </div>

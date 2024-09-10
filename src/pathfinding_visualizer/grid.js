@@ -94,7 +94,9 @@ export default class Grid extends Component {
     const { grid } = this.state;
     const newGrid = grid.slice();
     if (this.state.startNode) {
-      newGrid[this.state.startNode.row][this.state.startNode.col].isStart = false;
+      newGrid[this.state.startNode.row][
+        this.state.startNode.col
+      ].isStart = false;
     }
     newGrid[row][col].isStart = true;
     this.setState({
@@ -108,7 +110,9 @@ export default class Grid extends Component {
     const { grid } = this.state;
     const newGrid = grid.slice();
     if (this.state.targetNode) {
-      newGrid[this.state.targetNode.row][this.state.targetNode.col].isTarget = false;
+      newGrid[this.state.targetNode.row][
+        this.state.targetNode.col
+      ].isTarget = false;
     }
     newGrid[row][col].isTarget = true;
     this.setState({
@@ -124,7 +128,8 @@ export default class Grid extends Component {
         if (node.isStart || node.isTarget) {
           return node;
         }
-        document.getElementById(`node-${node.row}-${node.col}`).className = "node";
+        document.getElementById(`node-${node.row}-${node.col}`).className =
+          "node";
         return {
           ...node,
           isWall: false,
@@ -157,7 +162,8 @@ export default class Grid extends Component {
           return node;
         }
         if (node.isVisited || node.isShortestPath) {
-          document.getElementById(`node-${node.row}-${node.col}`).className = "node";
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node";
           return {
             ...node,
             isVisited: false,
@@ -184,19 +190,25 @@ export default class Grid extends Component {
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
         if (!node.isStart && !node.isTarget) {
-          document.getElementById(`node-${node.row}-${node.col}`).className = "node node-visited";
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node node-visited";
         }
       }, speed * i);
     }
   }
 
   animateShortestPath(nodesInShortestPathOrder) {
+    if( nodesInShortestPathOrder.length === 1 ) {
+      alert("Target not found!!!");
+      return ;
+    }
     const speed = this.getAnimationSpeed();
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
         if (!node.isStart && !node.isTarget) {
-          document.getElementById(`node-${node.row}-${node.col}`).className = "node node-shortest-path";
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node node-shortest-path";
         }
       }, speed * i);
     }
@@ -235,39 +247,36 @@ export default class Grid extends Component {
   visualizeBFS() {
     const { grid } = this.state;
     const startNode = grid[this.state.startNode.row][this.state.startNode.col];
-    const finishNode = grid[this.state.targetNode.row][this.state.targetNode.col];
+    const finishNode =
+      grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = bfs(grid, startNode, finishNode);
+    console.log(visitedNodes.length) ;
     const shortestPath = createPathBFS(finishNode);
-    if ( !visitedNodes || visitedNodes.length === 0 || !shortestPath || shortestPath.length === 0) {
-      alert("Target node not found.");
-      return;
-    }
+    console.log(shortestPath.length);
     this.animateAlgo(visitedNodes, shortestPath);
   }
 
   visualizeDFS() {
     const { grid } = this.state;
     const startNode = grid[this.state.startNode.row][this.state.startNode.col];
-    const finishNode = grid[this.state.targetNode.row][this.state.targetNode.col];
+    const finishNode =
+      grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = dfs(grid, startNode, finishNode);
     const shortestPath = createPathDFS(finishNode);
-    if ( !visitedNodes || visitedNodes.length === 0 || !shortestPath || shortestPath.length === 0) {
-      alert("Target node not found.");
-      return;
-    }
+    console.log(visitedNodes.length) ;
+    console.log(shortestPath.length);
     this.animateAlgo(visitedNodes, shortestPath);
   }
 
   visualizeDijkstra() {
     const { grid } = this.state;
     const startNode = grid[this.state.startNode.row][this.state.startNode.col];
-    const finishNode = grid[this.state.targetNode.row][this.state.targetNode.col];
+    const finishNode =
+      grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = dijkstra(grid, startNode, finishNode);
     const shortestPath = createPath(finishNode);
-    if ( !visitedNodes || visitedNodes.length === 0 || !shortestPath || shortestPath.length === 0) {
-      alert("Target node not found.");
-      return;
-    }
+    console.log(visitedNodes.length) ;
+    console.log(shortestPath.length);
     this.animateAlgo(visitedNodes, shortestPath);
   }
 
@@ -286,10 +295,16 @@ export default class Grid extends Component {
     return (
       <div className="grid-container">
         <div className="controls">
-          <button className="control-button-green" onClick={this.handleSelectStartNode}>
+          <button
+            className="control-button-green"
+            onClick={this.handleSelectStartNode}
+          >
             Select Start Node
           </button>
-          <button className="control-button-red" onClick={this.handleSelectEndNode}>
+          <button
+            className="control-button-red"
+            onClick={this.handleSelectEndNode}
+          >
             Select End Node
           </button>
         </div>
@@ -309,7 +324,9 @@ export default class Grid extends Component {
                       isWall={isWall}
                       onMouseDown={(row, col) => this.handleMouseDown(row, col)}
                       onMouseUp={() => this.handleMouseUp()}
-                      onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
+                      onMouseEnter={(row, col) =>
+                        this.handleMouseEnter(row, col)
+                      }
                     />
                   );
                 })}

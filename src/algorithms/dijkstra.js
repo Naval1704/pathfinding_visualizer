@@ -97,6 +97,7 @@ export function dijkstra(grid, startingNode, targetNode) {
             }
         }
     }
+    return visitedNodes ;
 }
 
 function getNeighbors(node, grid) {

@@ -56,13 +56,13 @@ function manhattanDistance(node, targetNode) {
     return Math.abs(node.row - targetNode.row) + Math.abs(node.col - targetNode.col);
 }
 
-function euclideanDistance(node, targetNode) {
-    return Math.sqrt(Math.pow(node.row - targetNode.row, 2) + Math.pow(node.col - targetNode.col, 2));
-}
+// function euclideanDistance(node, targetNode) {
+//     return Math.sqrt(Math.pow(node.row - targetNode.row, 2) + Math.pow(node.col - targetNode.col, 2));
+// }
 
-function chebyshevDistance(node, targetNode) {
-    return Math.max(Math.abs(node.row - targetNode.row), Math.abs(node.col - targetNode.col));
-}
+// function chebyshevDistance(node, targetNode) {
+//     return Math.max(Math.abs(node.row - targetNode.row), Math.abs(node.col - targetNode.col));
+// }
 
 export function astar(grid, startingNode, targetNode) {
     const visitedNodes = [];
@@ -93,7 +93,7 @@ export function astar(grid, startingNode, targetNode) {
             return visitedNodes;
         }
 
-        visitedNodes.push(currNode); // Mark visited
+        visitedNodes.push(currNode);
 
         const neighbors = getNeighbors(currNode, grid);
 

@@ -213,18 +213,18 @@ body {
 .color-codes {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center; 
+  align-items: flex-start;
+  justify-content: center;
   padding: 20px;
-  width: 80%;
-  margin: 0 auto; 
+  width: auto;
+  margin: 0 auto;
 }
 
 .color-code {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  width: 50%; 
+  width: 100%;
   margin-bottom: 10px;
 }
 

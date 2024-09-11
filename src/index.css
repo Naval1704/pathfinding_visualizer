@@ -27,8 +27,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  /* border-right: 1px solid #000; */
+  /* padding: 20px; */
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -92,8 +91,25 @@ body {
   background-color: #d1e7dd; /* Change this color to your desired selected color */
 }
 
+.visualize-pattern-button {
+  width: 50%;
+  padding: 10px;
+  background-color: #1abc9c;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.visualize-pattern-button:hover {
+  background-color: #16a085;
+  transform: scale(1.05);
+}
+
 .visualize-button {
-  width: 80%;
+  width: 50%;
   padding: 10px;
   background-color: #1abc9c;
   color: white;

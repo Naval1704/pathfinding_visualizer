@@ -6,6 +6,7 @@ import { dijkstra, createPath } from "../algorithms/dijkstra";
 import { bfs, createPathBFS } from "../algorithms/bfs";
 import { dfs, createPathDFS } from "../algorithms/dfs";
 import { astar, createPathAstar } from "../algorithms/A_star";
+import { primsMaze } from "../algorithms/maze generation/prims_maze";
 
 export default class Grid extends Component {
   constructor(props) {
@@ -229,13 +230,7 @@ export default class Grid extends Component {
     }
   }
 
-  visualizeAlgorithm = (algorithm) => {
-    const { startNode, targetNode } = this.state;
-    if (!startNode || !targetNode) {
-      alert("Please select start node and end node !!");
-      return;
-    }
-
+  visualizeAlgorithm(algorithm) {  
     if (algorithm === "A_star") {
       this.visualizeAStar();
     } else if (algorithm === "Dijkstra's_Algorithm") {
@@ -245,7 +240,45 @@ export default class Grid extends Component {
     } else if (algorithm === "Depth_first_Search") {
       this.visualizeDFS();
     }
-  };
+  }
+
+  visualizePattern(pattern) {
+    if (pattern === "Prims_maze") {
+      this.visualizePrimsMaze();
+    }
+  }
+
+  animateMazeGeneration(maze) {
+    const speed = this.getAnimationSpeed();
+    const newGrid = this.state.grid.slice();
+    for (let row = 0; row < maze.length; row++) {
+      for (let col = 0; col < maze[0].length; col++) {
+        setTimeout(() => {
+          const node = maze[row][col];
+          const newNode = {
+            ...node,
+            isWall: node.isWall,
+          };
+          newGrid[row][col] = newNode;
+          if (node.isWall) {
+            document.getElementById(`node-${node.row}-${node.col}`).className = "node node-wall";
+          } else {
+            document.getElementById(`node-${node.row}-${node.col}`).className = "node";
+          }
+          if (row === maze.length - 1 && col === maze[0].length - 1) {
+            this.setState({ grid: newGrid });
+          }
+        }, speed * (row * maze[0].length + col));
+      }
+    }
+  }
+
+  visualizePrimsMaze() {
+    const { grid } = this.state;
+    const maze = primsMaze(grid);
+    this.animateMazeGeneration(maze);
+  }
+  
 
   visualizeBFS() {
     const { grid } = this.state;

@@ -25,14 +25,38 @@ function App() {
     }
   };
 
-  const handleVisualize = () => {
+  const handleVisualizeAlgorithm = () => {
     if (gridRef.current) {
       gridRef.current.visualizeAlgorithm(algorithm);
     }
   };
 
-  const handleSelectChange = (setter) => (e) => {
-    setter(e.target.value);
+  const handleVisualizePattern = () => {
+    if (gridRef.current) {
+      gridRef.current.visualizePattern(pattern);
+    }
+  };
+
+  const handleAlgorithmChange = (e) => {
+    setAlgorithm(e.target.value);
+    if (e.target.value) {
+      e.target.classList.add("selected");
+    } else {
+      e.target.classList.remove("selected");
+    }
+  };
+
+  const handlePatternChange = (e) => {
+    setPattern(e.target.value);
+    if (e.target.value) {
+      e.target.classList.add("selected");
+    } else {
+      e.target.classList.remove("selected");
+    }
+  };
+
+  const handleSpeedChange = (e) => {
+    setSpeed(e.target.value);
     if (e.target.value) {
       e.target.classList.add("selected");
     } else {
@@ -54,13 +78,17 @@ function App() {
               id="algorithm"
               name="algorithm"
               value={algorithm}
-              onChange={handleSelectChange(setAlgorithm)}
+              onChange={handleAlgorithmChange}
             >
               <option value="">Select Algorithm</option>
               <option value="Dijkstra's_Algorithm">Dijkstra's Algorithm</option>
-              <option value="Breadth_first_Search">Breadth-first Search</option>
-              <option value="Depth_first_Search">Depth-first Search</option>
-              <option value="A_star" >A* Algorithm</option>
+              <option value="Breadth_first_Search">
+                Breadth-first Search Algorithm
+              </option>
+              <option value="Depth_first_Search">
+                Depth-first Search Algorithm
+              </option>
+              <option value="A_star">A* Algorithm</option>
             </select>
           </div>
 
@@ -71,14 +99,10 @@ function App() {
               id="pattern"
               name="pattern"
               value={pattern}
-              onChange={handleSelectChange(setPattern)}
+              onChange={handlePatternChange}
             >
               <option value="">Select Pattern</option>
-              {/* <option value="Maze">Maze</option> */}
-              {/* <option value="Recursive_Division_(vertical_skew)">Recursive Division (vertical skew)</option>
-              <option value="Recursive_Division_(horizontal_skew)">Recursive Division (horizontal skew)</option>
-              <option value="Basic_Random_Maze">Basic Random Maze</option>
-              <option value="Simple_Stair_Pattern">Simple Stair Pattern</option> */}
+              <option value="Prims_maze">Prim's Algorithm maze</option>
             </select>
           </div>
 
@@ -89,7 +113,7 @@ function App() {
               id="speed"
               name="speed"
               value={speed}
-              onChange={handleSelectChange(setSpeed)}
+              onChange={handleSpeedChange}
             >
               <option value="">Select Speed</option>
               <option value="fast">Fast</option>
@@ -100,9 +124,15 @@ function App() {
         </div>
 
         <hr className="partition-line" />
-
-        <button className="visualize-button" onClick={handleVisualize}>
-          Visualize
+        <button
+          className="visualize-pattern-button"
+          onClick={handleVisualizePattern}
+        >
+          Make Pattern
+        </button>
+        <hr className="partition-line" />
+        <button className="visualize-button" onClick={handleVisualizeAlgorithm}>
+          Visualize Algorithm
         </button>
 
         <hr className="partition-line" />

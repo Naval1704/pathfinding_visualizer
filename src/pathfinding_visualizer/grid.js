@@ -231,6 +231,11 @@ export default class Grid extends Component {
   }
 
   visualizeAlgorithm(algorithm) {  
+    const {startNode, targetNode} = this.state ;
+    if( !startNode || !targetNode ) {
+      alert("Please select starting node and ending node to Visualize!!") ;
+      return;
+    }
     if (algorithm === "A_star") {
       this.visualizeAStar();
     } else if (algorithm === "Dijkstra's_Algorithm") {

@@ -15,7 +15,7 @@ body {
 
 .App {
   display: flex;
-  height: 100vh;
+  height: 100%;
   background-color: #f4f4f9;
   font-family: 'Arial', sans-serif;
 }
@@ -38,6 +38,40 @@ body {
   text-align: center;
   border-bottom: 2px solid #34495e;
 }
+
+.instructions {
+  border: 2px solid #f3441e ;
+  border-radius: 8px; 
+  width: 80%;
+  padding: 15px; 
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.instructions h2 {
+  font-size: 24px; 
+  color: #f3441e; 
+  margin-top: 0;
+  margin-bottom:10px;
+}
+
+.instructions ol {
+  padding-left: 20px;
+  list-style-type: decimal; 
+}
+
+.instructions li {
+  margin-bottom: 15px; 
+  font-size: 16px; 
+  line-height: 1.5; 
+  position: relative; 
+}
+
+.instructions li::marker {
+  color: #f3441e;
+  font-weight: bold;
+}
+
 
 .algo-list {
   list-style-type: none;
@@ -262,6 +296,8 @@ body {
 .end-node svg {
   color: #dc3545; /* Red for end node */
 }
+
+
 
 /* Play ground css */
 

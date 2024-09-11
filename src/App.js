@@ -69,29 +69,22 @@ function App() {
       <div className="left-column">
         <h1 className="app-title">Pathfinding Visualizer</h1>
 
+        <div className="instructions">
+          <h2>Instructions</h2>
+          <ol>
+            <li>Select a pattern (optional) or create walls manually.</li>
+            <li>Choose a speed from the dropdown menu.</li>
+            <li>Select an algorithm to visualize.</li>
+            <li>Click "Make Pattern" to generate the grid.</li>
+            <li>
+              Click "Visualize Algorithm" to see the selected algorithm in
+              action.
+            </li>
+          </ol>
+        </div>
+
         {/* Dropdown for algorithms and pattern selections */}
         <div className="dropdown-menu">
-          {/* Selecting algorithms */}
-          <div className="dropdown">
-            <label htmlFor="algorithm">Algorithm:</label>
-            <select
-              id="algorithm"
-              name="algorithm"
-              value={algorithm}
-              onChange={handleAlgorithmChange}
-            >
-              <option value="">Select Algorithm</option>
-              <option value="Dijkstra's_Algorithm">Dijkstra's Algorithm</option>
-              <option value="Breadth_first_Search">
-                Breadth-first Search Algorithm
-              </option>
-              <option value="Depth_first_Search">
-                Depth-first Search Algorithm
-              </option>
-              <option value="A_star">A* Algorithm</option>
-            </select>
-          </div>
-
           {/* Selecting patterns */}
           <div className="dropdown">
             <label htmlFor="pattern">Pattern:</label>
@@ -119,6 +112,27 @@ function App() {
               <option value="fast">Fast</option>
               <option value="medium">Medium</option>
               <option value="slow">Slow</option>
+            </select>
+          </div>
+
+          {/* Selecting algorithms */}
+          <div className="dropdown">
+            <label htmlFor="algorithm">Algorithm:</label>
+            <select
+              id="algorithm"
+              name="algorithm"
+              value={algorithm}
+              onChange={handleAlgorithmChange}
+            >
+              <option value="">Select Algorithm</option>
+              <option value="Dijkstra's_Algorithm">Dijkstra's Algorithm</option>
+              <option value="Breadth_first_Search">
+                Breadth-first Search Algorithm
+              </option>
+              <option value="Depth_first_Search">
+                Depth-first Search Algorithm
+              </option>
+              <option value="A_star">A* Algorithm</option>
             </select>
           </div>
         </div>

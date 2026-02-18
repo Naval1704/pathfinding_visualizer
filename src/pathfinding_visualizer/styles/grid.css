@@ -1,174 +1,174 @@
-/* Container for the grid */
+/* ====== Grid Container ====== */
 .grid-container {
   position: relative;
   width: 100%;
-  box-sizing: border-box;
-  justify-content: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  background-color: #e9ecef; 
+  justify-content: center;
+  transition: background 0.3s ease;
 }
 
-/* Grid styling */
+.grid-container.selecting-start {
+  background: linear-gradient(180deg, rgba(34, 197, 94, 0.04), transparent 40%);
+}
+
+.grid-container.selecting-end {
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.04), transparent 40%);
+}
+
+/* ====== Controls ====== */
+.controls {
+  display: flex;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+/* ====== Grid ====== */
 .grid {
+  display: flex;
   flex-direction: column;
   gap: 0;
-  margin: 10px;
-  background-color: #ffffff; 
-  border: 2px solid #ccc;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  background: #fff;
 }
 
-/* Grid row styling */
+/* ====== Grid Row ====== */
 .grid-row {
   display: flex;
   gap: 0;
 }
 
-/* Node styling */
+/* ====== Node Base ====== */
 .node {
-  width: 22px; 
-  height: 22px; 
-  border: 1px solid #676764;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #f0f0f0;
   box-sizing: border-box;
   display: inline-block;
-  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; 
   cursor: pointer;
   margin: 0;
   padding: 0;
-  border-radius: 4px; 
+  background-color: #fff;
+  transition: background-color 0.12s ease, box-shadow 0.12s ease;
 }
 
-/* Start node styling */
-.node-start {
-  background-color: #4caf50; 
-  border: 2px solid #388e3c; 
-}
-
-/* Target node styling */
-.node-target {
-  background-color: #dc3545; 
-  border: 2px solid #d32f2f; 
-}
-
-/* Wall node styling */
-.node-wall {
-  background-color: #0c3547; 
-  border: 2px solid #08303a; 
-}
-
-/* Visited node styling */
-.node-visited {
-  animation: visitedAnimation 1.5s ease-out forwards;
-}
-
-@keyframes visitedAnimation {
-  0% {
-    transform: scale(0.3);
-    background-color: rgba(173, 216, 230, 0.75);
-    border-radius: 50%;
-  }
-  25% {
-    background-color: rgba(135, 206, 250, 0.75); 
-  }
-  50% {
-    transform: scale(1.2);
-    background-color: rgba(144, 238, 144, 0.75);
-  }
-  75% {
-    background-color: rgba(255, 255, 224, 0.75); 
-  }
-  100% {
-    transform: scale(1);
-    background-color: rgba(255, 229, 204, 0.9); 
-  }
-}
-
-/* Shortest path node styling */
-.node-shortest-path {
-  animation: shortestPath 2s ease-in-out forwards;
-}
-
-@keyframes shortestPath {
-  0% {
-    transform: scale(0.6);
-    background-color: rgb(255, 223, 186);
-  }
-  25% {
-    transform: scale(0.8);
-    background-color: rgb(255, 215, 0); 
-  }
-  50% {
-    transform: scale(1.2);
-    background-color: rgb(255, 193, 7); 
-  }
-  75% {
-    transform: scale(1.4);
-    background-color: rgb(255, 165, 0); 
-  }
-  100% {
-    transform: scale(1);
-    background-color: rgb(255, 140, 0); 
-  }
-}
-
-
-/* Hover effect for nodes */
 .node:hover {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  transform: translateY(-2px); 
-}
-
-/* Additional styles for better UI */
-.grid-row {
-  justify-content: center; 
-}
-
-.node {
-  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s, border 0.3s; /* Smooth transition for border */
+  background-color: #f5f3ff;
+  box-shadow: inset 0 0 0 2px rgba(99, 102, 241, 0.2);
 }
 
 .node:active {
-  transform: scale(0.95); 
+  transform: scale(0.88);
 }
 
-
-/* Controls */
-
-.controls {
-  text-align: center;
+/* ====== Start Node ====== */
+.node-start {
+  background-color: #22c55e !important;
+  border-color: #22c55e !important;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  animation: pulseStart 2s ease-in-out infinite;
 }
 
-.control-button-green {
-  padding: 12px;
-  background-color: #4caf50; 
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  margin: 4px 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+@keyframes pulseStart {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.15), 0 0 12px rgba(34, 197, 94, 0.1);
+  }
 }
 
-.control-button-green:hover {
-  background-color: #45a049;
-  transform: scale(1.05);
+/* ====== Target/End Node ====== */
+.node-target {
+  background-color: #ef4444 !important;
+  border-color: #ef4444 !important;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+  animation: pulseEnd 2s ease-in-out infinite;
 }
 
-.control-button-red {
-  padding: 12px;
-  background-color: #dc3545; 
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+@keyframes pulseEnd {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.15), 0 0 12px rgba(239, 68, 68, 0.1);
+  }
 }
 
-.control-button-red:hover {
-  background-color: #c82333;
-  transform: scale(1.05);
+/* ====== Wall Node ====== */
+.node-wall {
+  background-color: #1e293b !important;
+  border-color: #1e293b !important;
+  animation: wallPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes wallPop {
+  0% {
+    transform: scale(0);
+    border-radius: 50%;
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    border-radius: 0;
+  }
+}
+
+/* ====== Visited Node ====== */
+.node-visited {
+  animation: visited 1s ease-out forwards;
+}
+
+@keyframes visited {
+  0% {
+    transform: scale(0.2);
+    background-color: #a5b4fc;
+    border-radius: 50%;
+  }
+  40% {
+    transform: scale(1.2);
+    background-color: #818cf8;
+    border-radius: 50%;
+  }
+  70% {
+    background-color: #a78bfa;
+  }
+  100% {
+    transform: scale(1);
+    background-color: #c4b5fd;
+    border-radius: 0;
+  }
+}
+
+/* ====== Shortest Path Node ====== */
+.node-shortest-path {
+  animation: pathGlow 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes pathGlow {
+  0% {
+    transform: scale(0.5);
+    background-color: #fde68a;
+    border-radius: 50%;
+  }
+  50% {
+    transform: scale(1.35);
+    background-color: #fbbf24;
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
+    border-radius: 4px;
+  }
+  100% {
+    transform: scale(1);
+    background-color: #fbbf24;
+    box-shadow: 0 0 6px rgba(251, 191, 36, 0.3);
+    border-radius: 0;
+  }
 }

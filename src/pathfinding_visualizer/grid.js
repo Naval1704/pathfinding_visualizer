@@ -18,6 +18,7 @@ export default class Grid extends Component {
       targetNode: null,
       selectingStartNode: false,
       selectingEndNode: false,
+      isAnimating: false,
     };
   }
 
@@ -28,8 +29,8 @@ export default class Grid extends Component {
 
   getInitialGrid = () => {
     const grid = [];
-    const rows = Math.floor(window.innerHeight / 28);
-    const cols = Math.floor(window.innerWidth / 32);
+    const rows = Math.floor((window.innerHeight - 120) / 26);
+    const cols = Math.floor(window.innerWidth / 26);
     for (let row = 0; row < rows; row++) {
       const currentRow = [];
       for (let col = 0; col < cols; col++) {
@@ -71,6 +72,7 @@ export default class Grid extends Component {
   };
 
   handleMouseDown = (row, col) => {
+    if (this.state.isAnimating) return;
     const { selectingStartNode, selectingEndNode } = this.state;
     if (selectingStartNode) {
       this.setStartNode(row, col);
@@ -87,6 +89,7 @@ export default class Grid extends Component {
   };
 
   handleMouseEnter = (row, col) => {
+    if (this.state.isAnimating) return;
     if (!this.state.mouseIsPressed) return;
     const newGrid = this.wallToggle(this.state.grid, row, col);
     this.setState({ grid: newGrid });
@@ -106,6 +109,7 @@ export default class Grid extends Component {
       startNode: { row, col },
       selectingStartNode: false,
     });
+    this.props.showToast("Start node placed!", "success");
   };
 
   setEndNode = (row, col) => {
@@ -122,18 +126,19 @@ export default class Grid extends Component {
       targetNode: { row, col },
       selectingEndNode: false,
     });
+    this.props.showToast("End node placed!", "success");
   };
 
   clearBoard = () => {
+    if (this.state.isAnimating) return;
     const newGrid = this.state.grid.map((row) =>
       row.map((node) => {
-        if (node.isStart || node.isTarget) {
-          return node;
-        }
         document.getElementById(`node-${node.row}-${node.col}`).className =
           "node";
         return {
           ...node,
+          isStart: false,
+          isTarget: false,
           isWall: false,
           isVisited: false,
           isShortestPath: false,
@@ -142,13 +147,17 @@ export default class Grid extends Component {
         };
       })
     );
-    this.setState({ grid: newGrid });
+    this.setState({ grid: newGrid, startNode: null, targetNode: null });
+    if (this.props.onStats) this.props.onStats(null);
   };
 
   clearWalls = () => {
+    if (this.state.isAnimating) return;
     const newGrid = this.state.grid.map((row) =>
       row.map((node) => {
         if (node.isWall) {
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node";
           return { ...node, isWall: false };
         }
         return node;
@@ -158,10 +167,18 @@ export default class Grid extends Component {
   };
 
   clearPath = () => {
+    if (this.state.isAnimating) return;
     const newGrid = this.state.grid.map((row) =>
       row.map((node) => {
-        if (node.isStart || node.isTarget) {
-          return node;
+        if (node.isStart) {
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node node-start";
+          return { ...node, isVisited: false, isShortestPath: false, distance: Infinity, prevNode: null };
+        }
+        if (node.isTarget) {
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node node-target";
+          return { ...node, isVisited: false, isShortestPath: false, distance: Infinity, prevNode: null };
         }
         if (node.isVisited || node.isShortestPath) {
           document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -178,14 +195,16 @@ export default class Grid extends Component {
       })
     );
     this.setState({ grid: newGrid });
+    if (this.props.onStats) this.props.onStats(null);
   };
 
   animateAlgo(visitedNodesInOrder, nodesInShortestPathOrder) {
     const speed = this.getAnimationSpeed();
+    this.setState({ isAnimating: true });
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
-          this.animateShortestPath(nodesInShortestPathOrder);
+          this.animateShortestPath(nodesInShortestPathOrder, visitedNodesInOrder.length);
         }, speed * i);
         return;
       }
@@ -199,9 +218,13 @@ export default class Grid extends Component {
     }
   }
 
-  animateShortestPath(nodesInShortestPathOrder) {
+  animateShortestPath(nodesInShortestPathOrder, visitedCount) {
     if (nodesInShortestPathOrder.length === 1) {
-      alert("Target not found!!!");
+      this.setState({ isAnimating: false });
+      this.props.showToast("No path found! Target is unreachable.", "error");
+      if (this.props.onStats) {
+        this.props.onStats({ visited: visitedCount, pathLength: 0 });
+      }
       return;
     }
     const speed = this.getAnimationSpeed();
@@ -211,6 +234,16 @@ export default class Grid extends Component {
         if (!node.isStart && !node.isTarget) {
           document.getElementById(`node-${node.row}-${node.col}`).className =
             "node node-shortest-path";
+        }
+        if (i === nodesInShortestPathOrder.length - 1) {
+          this.setState({ isAnimating: false });
+          this.props.showToast("Path found!", "success");
+          if (this.props.onStats) {
+            this.props.onStats({
+              visited: visitedCount,
+              pathLength: nodesInShortestPathOrder.length,
+            });
+          }
         }
       }, speed * i);
     }
@@ -230,24 +263,43 @@ export default class Grid extends Component {
     }
   }
 
-  visualizeAlgorithm(algorithm) {  
-    const {startNode, targetNode} = this.state ;
-    if( !startNode || !targetNode ) {
-      alert("Please select starting node and ending node to Visualize!!") ;
+  visualizeAlgorithm(algorithm) {
+    if (this.state.isAnimating) {
+      this.props.showToast("Animation in progress, please wait.", "info");
       return;
     }
-    if (algorithm === "A_star") {
-      this.visualizeAStar();
-    } else if (algorithm === "Dijkstra's_Algorithm") {
-      this.visualizeDijkstra();
-    } else if (algorithm === "Breadth_first_Search") {
-      this.visualizeBFS();
-    } else if (algorithm === "Depth_first_Search") {
-      this.visualizeDFS();
+    const { startNode, targetNode } = this.state;
+    if (!startNode || !targetNode) {
+      this.props.showToast("Please select a start and end node first!", "error");
+      return;
     }
+    if (!algorithm) {
+      this.props.showToast("Please select an algorithm first!", "error");
+      return;
+    }
+    this.clearPath();
+    setTimeout(() => {
+      if (algorithm === "A_star") {
+        this.visualizeAStar();
+      } else if (algorithm === "Dijkstra's_Algorithm") {
+        this.visualizeDijkstra();
+      } else if (algorithm === "Breadth_first_Search") {
+        this.visualizeBFS();
+      } else if (algorithm === "Depth_first_Search") {
+        this.visualizeDFS();
+      }
+    }, 50);
   }
 
   visualizePattern(pattern) {
+    if (this.state.isAnimating) {
+      this.props.showToast("Animation in progress, please wait.", "info");
+      return;
+    }
+    if (!pattern) {
+      this.props.showToast("Please select a maze pattern first!", "error");
+      return;
+    }
     if (pattern === "Prims_maze") {
       this.visualizePrimsMaze();
     }
@@ -255,6 +307,7 @@ export default class Grid extends Component {
 
   animateMazeGeneration(maze) {
     const speed = this.getAnimationSpeed();
+    this.setState({ isAnimating: true });
     const newGrid = this.state.grid.slice();
     for (let row = 0; row < maze.length; row++) {
       for (let col = 0; col < maze[0].length; col++) {
@@ -266,12 +319,15 @@ export default class Grid extends Component {
           };
           newGrid[row][col] = newNode;
           if (node.isWall) {
-            document.getElementById(`node-${node.row}-${node.col}`).className = "node node-wall";
+            document.getElementById(`node-${node.row}-${node.col}`).className =
+              "node node-wall";
           } else {
-            document.getElementById(`node-${node.row}-${node.col}`).className = "node";
+            document.getElementById(`node-${node.row}-${node.col}`).className =
+              "node";
           }
           if (row === maze.length - 1 && col === maze[0].length - 1) {
-            this.setState({ grid: newGrid });
+            this.setState({ grid: newGrid, isAnimating: false });
+            this.props.showToast("Maze generated!", "success");
           }
         }, speed * (row * maze[0].length + col));
       }
@@ -283,7 +339,6 @@ export default class Grid extends Component {
     const maze = primsMaze(grid);
     this.animateMazeGeneration(maze);
   }
-  
 
   visualizeBFS() {
     const { grid } = this.state;
@@ -291,9 +346,7 @@ export default class Grid extends Component {
     const finishNode =
       grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = bfs(grid, startNode, finishNode);
-    console.log(visitedNodes.length);
     const shortestPath = createPathBFS(finishNode);
-    console.log(shortestPath.length);
     this.animateAlgo(visitedNodes, shortestPath);
   }
 
@@ -304,8 +357,6 @@ export default class Grid extends Component {
       grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = dfs(grid, startNode, finishNode);
     const shortestPath = createPathDFS(finishNode);
-    console.log(visitedNodes.length);
-    console.log(shortestPath.length);
     this.animateAlgo(visitedNodes, shortestPath);
   }
 
@@ -316,8 +367,6 @@ export default class Grid extends Component {
       grid[this.state.targetNode.row][this.state.targetNode.col];
     const visitedNodes = dijkstra(grid, startNode, finishNode);
     const shortestPath = createPath(finishNode);
-    console.log(visitedNodes.length);
-    console.log(shortestPath.length);
     this.animateAlgo(visitedNodes, shortestPath);
   }
 
@@ -332,31 +381,38 @@ export default class Grid extends Component {
   }
 
   handleSelectStartNode = () => {
+    if (this.state.isAnimating) return;
     this.setState({ selectingStartNode: true, selectingEndNode: false });
-    alert("Please select a start node.");
+    this.props.showToast("Click on the grid to place the start node", "info");
   };
 
   handleSelectEndNode = () => {
+    if (this.state.isAnimating) return;
     this.setState({ selectingEndNode: true, selectingStartNode: false });
-    alert("Please select an end node.");
+    this.props.showToast("Click on the grid to place the end node", "info");
   };
 
   render() {
-    const { grid } = this.state;
+    const { grid, selectingStartNode, selectingEndNode } = this.state;
+    const selectionMode = selectingStartNode
+      ? "selecting-start"
+      : selectingEndNode
+      ? "selecting-end"
+      : "";
     return (
-      <div className="grid-container">
+      <div className={`grid-container ${selectionMode}`}>
         <div className="controls">
           <button
-            className="control-button-green"
+            className={`btn btn-start-node ${selectingStartNode ? "active" : ""}`}
             onClick={this.handleSelectStartNode}
           >
-            Select Start Node
+            Place Start
           </button>
           <button
-            className="control-button-red"
+            className={`btn btn-end-node ${selectingEndNode ? "active" : ""}`}
             onClick={this.handleSelectEndNode}
           >
-            Select End Node
+            Place End
           </button>
         </div>
         <div className="grid">
